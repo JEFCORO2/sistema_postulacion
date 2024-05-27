@@ -20,7 +20,9 @@ class RegistroController extends Controller
             'tel' => 'required|min:9',
             'email' => 'required|unique:users|max:60',
             'password' => 'required|confirmed|min:6',
-            'estado' => 'nullable'
+            'estado' => 'nullable',
+            'nota' => 'nullable',
+            'tiempo' => 'nullable'
         ]);
 
         User::create([
@@ -30,7 +32,9 @@ class RegistroController extends Controller
             'rols_id' => 2,
             'estado' => null,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'nota' => null,
+            'tiempo' => null
         ]);
 
         auth()->attempt($request->only('email', 'password'));

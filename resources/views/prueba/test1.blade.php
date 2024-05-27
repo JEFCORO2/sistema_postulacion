@@ -50,26 +50,54 @@
             document.getElementById('detalles').textContent = JSON.stringify(selectedValues, null, 2);
         }
 
-        // Recuperar los valores seleccionados al cargar la página
+        // Función para iniciar el temporizador
+        function startTimer(duration) {
+            var timer = duration, minutes, seconds;
+            var interval = setInterval(function () {
+                minutes = Math.floor(timer / 60);
+                seconds = timer % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                document.getElementById('timer').textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    finishTest();
+                    alert("El tiempo ha terminado. El test se ha finalizado automáticamente.");
+                }
+            }, 1000);
+        }
+
+        // Mostrar la página seleccionada
+        function showPage(page) {
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].style.display = (i + 1 === page) ? 'block' : 'none';
+            }
+
+            // Actualizar el estado de los botones de paginación
+            var pageButtons = document.querySelectorAll('.page-link');
+            for (var i = 0; i < pageButtons.length; i++) {
+                pageButtons[i].classList.toggle('active', i + 1 === page);
+                pageButtons[i].disabled = (i + 1 !== page && i + 1 !== page + 1);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Ocultar todas las páginas excepto la primera
             var pages = document.querySelectorAll('.page');
             for (var i = 1; i < pages.length; i++) {
                 pages[i].style.display = 'none';
             }
-        });
 
-        // Mostrar la página seleccionada
-        function showPage(page) {
-            var pages = document.querySelectorAll('.page');
-            for (var i = 0; i < pages.length; i++) {
-                if (i + 1 === page) {
-                    pages[i].style.display = 'block';
-                } else {
-                    pages[i].style.display = 'none';
-                }
-            }
-        }
+            // Iniciar el temporizador de 60 minutos
+            //startTimer(60 * 60);
+
+            // Inicializar la paginación
+            showPage(1);
+        });
     </script>
 @endsection
 
@@ -86,9 +114,14 @@
             $totalPages = ceil($totalImages / $imagesPerPage);
         @endphp
 
+        <!-- Temporizador -->
+        <div class="text-center mb-3">
+            <span id="timer" style="font-size: 1.5rem; color: red;"></span>
+        </div>
+
         @for ($page = 1; $page <= $totalPages; $page++)
             <div class="page">
-                <div class="row">
+                <div class="row g-3">
                     @php
                         // Calcular el índice de inicio y fin de las imágenes para la página actual
                         $startIndex = ($page - 1) * $imagesPerPage;
@@ -96,12 +129,12 @@
                     @endphp
 
                     @for ($i = $startIndex; $i < $endIndex; $i++)
-                        <div class="col-md-4">
-                            <div class="card mb-3">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="card h-100">
                                 <div class="card__preview">
-                                    <img src="img/raven/A{{ $i + 1 }}.jpg" alt="Imagen {{ $i + 1 }}" >
+                                    <img src="img/raven/A{{ $i + 1 }}.jpg" class="card-img-top" alt="Imagen {{ $i + 1 }}">
                                 </div>
-                                <div class="mt-3 mb-2 d-flex justify-content-center">
+                                <div class="mt-1 mb-2 d-flex justify-content-center">
                                     {{-- <label for="respuesta{{ $i }}">Seleccionar respuesta:</label> --}}
                                     <select id="respuesta{{ $i }}" class="form-select respuesta-selector" style="width: auto;" onchange="updateDropdown({{ $i }}, this.value)">
                                         <option value="">Seleccionar</option>

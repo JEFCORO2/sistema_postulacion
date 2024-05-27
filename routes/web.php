@@ -46,6 +46,7 @@ Route::post('/roles', [RolController::class, 'crear']);
 
 //Postulacion-Pruebas
 Route::get('/test', [PruebaController::class, 'index'])->name('test');
+Route::post('/guardar-nota', [PruebaController::class, 'guardarNota'])->name('guardar-nota');
 
 //Control hacia las ventanas
 Route::get('/{user:name}', [PostController::class, 'index'])->name('posts.index')->middleware('auth');

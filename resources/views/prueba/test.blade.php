@@ -42,44 +42,55 @@
                 }
             }
 
-            // Mostrar el resultado en la página
-            var resultText = "Respuestas correctas: " + correctCount + " de " + correctAnswers.length;
-            document.getElementById('resultados').textContent = resultText;
-
-            // También se puede mostrar el arreglo completo
-            document.getElementById('detalles').textContent = JSON.stringify(selectedValues, null, 2);
+            // Guardar la puntuación en el backend usando un formulario
+            var score = correctCount;
+            saveScore(score);
         }
 
-        // Recuperar los valores seleccionados al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ocultar todas las páginas excepto la primera
-            var pages = document.querySelectorAll('.page');
-            for (var i = 1; i < pages.length; i++) {
-                pages[i].style.display = 'none';
-            }
+        // Función para guardar la puntuación utilizando un formulario
+        // Función para guardar la puntuación y el tiempo utilizado
+        function saveScore(score, timeSpent) {
+            // Convertir el tiempo transcurrido a una cadena de texto (formato mm:ss)
+            var formattedTime = formatTime(timeSpent);
 
-            // Iniciar el temporizador de 60 minutos
-            //startTimer(60 * 60);
-        });
+            // Crear un formulario oculto
+            var form = document.createElement('form');
+            form.action = '{{ route("guardar-nota") }}'; // Usar el nombre de la ruta
+            form.method = 'POST';
 
-        // Mostrar la página seleccionada
-        function showPage(page) {
-            var pages = document.querySelectorAll('.page');
-            for (var i = 0; i < pages.length; i++) {
-                if (i + 1 === page) {
-                    pages[i].style.display = 'block';
-                } else {
-                    pages[i].style.display = 'none';
-                }
-            }
+            // Agregar el token CSRF
+            var csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}'; // Obtener el token CSRF
+            form.appendChild(csrfInput);
 
-            // Deshabilitar los botones de páginas anteriores
-            var pageButtons = document.querySelectorAll('.page-link');
-            for (var i = 0; i < pageButtons.length; i++) {
-                if (i < page) {
-                    pageButtons[i].disabled = true;
-                }
-            }
+            // Crear un campo de entrada para la puntuación (solo el número de respuestas correctas)
+            var scoreInput = document.createElement('input');
+            scoreInput.type = 'hidden';
+            scoreInput.name = 'score';
+            scoreInput.value = score;
+            form.appendChild(scoreInput);
+
+            // Crear un campo de entrada para el tiempo utilizado (como cadena de texto)
+            var timeInput = document.createElement('input');
+            timeInput.type = 'hidden';
+            timeInput.name = 'time_spent';
+            timeInput.value = formattedTime; // Enviar el tiempo formateado como mm:ss
+            form.appendChild(timeInput);
+
+            // Agregar el formulario al cuerpo del documento
+            document.body.appendChild(form);
+
+            // Enviar el formulario
+            form.submit();
+        }
+
+        // Función para formatear el tiempo en minutos y segundos
+        function formatTime(seconds) {
+            var minutes = Math.floor(seconds / 60);
+            var remainderSeconds = seconds % 60;
+            return `${minutes}:${remainderSeconds < 10 ? '0' + remainderSeconds : remainderSeconds}`;
         }
 
         // Función para iniciar el temporizador
@@ -101,6 +112,35 @@
                 }
             }, 1000);
         }
+
+        // Mostrar la página seleccionada
+        function showPage(page) {
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].style.display = (i + 1 === page) ? 'block' : 'none';
+            }
+
+            // Actualizar el estado de los botones de paginación
+            var pageButtons = document.querySelectorAll('.page-link');
+            for (var i = 0; i < pageButtons.length; i++) {
+                pageButtons[i].classList.toggle('active', i + 1 === page);
+                pageButtons[i].disabled = (i + 1 !== page && i + 1 !== page + 1);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ocultar todas las páginas excepto la primera
+            var pages = document.querySelectorAll('.page');
+            for (var i = 1; i < pages.length; i++) {
+                pages[i].style.display = 'none';
+            }
+
+            // Iniciar el temporizador de 60 minutos
+             startTimer(60 * 60);
+
+            // Inicializar la paginación
+            showPage(1);
+        });
     </script>
 @endsection
 
@@ -175,13 +215,23 @@
         <div class="text-center mt-1">
             <button class="btn btn-success" onclick="finishTest()">Terminar</button>
         </div>
+    </div>
 
-        <!-- Sección para mostrar los resultados -->
-        <div id="resultados" class="mt-5">
-            <!-- Los resultados se mostrarán aquí -->
-        </div>
-        <div id="detalles" class="mt-3">
-            <!-- Los detalles de las respuestas se mostrarán aquí -->
+    <!-- Modal de resultado -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Resultados del Test</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResultText"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

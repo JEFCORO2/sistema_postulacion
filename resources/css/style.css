@@ -131,3 +131,9 @@ body {
     fill: var(--like);
 }
 
+.page-link.active {
+    background-color: #007bff; /* Color de fondo para la página activa */
+    color: white;             /* Color del texto para la página activa */
+    border-color: #007bff;    /* Color del borde para la página activa */
+}
+
