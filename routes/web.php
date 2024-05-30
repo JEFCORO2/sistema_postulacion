@@ -29,12 +29,12 @@ Route::post('/logout', [LogoutController::class, 'store'])->name('logout');
 Route::get('/postulantes', [UserController::class, 'index'])->name('postulantes');
 
 //Configuracion Usuario
-Route::get('/admin/perfil/{name}', [PerfilController::class, 'index'])->name('perfil.index');
-//Post para for,ularios
-Route::post('/admin/perfil', [PerfilController::class, 'editar_post'])->name('editar_post');
-
+Route::get('/admin/perfil', [PerfilController::class, 'index'])->name('perfil.index');
 //Editar perfil
 Route::get('/admin/perfil-editar', [PerfilController::class, 'editar_perfil'])->name('editar_perfil');
+
+//Post para for,ularios
+Route::post('/admin/perfil', [PerfilController::class, 'editar_post'])->name('editar_post');
 
 
 //Listar Usuarios

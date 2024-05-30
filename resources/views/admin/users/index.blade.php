@@ -3,7 +3,6 @@
 @section('title', 'Postulantes')
 
 @section('content_header')
-
     <table class="table table-striped mt-4">
         <thead>
             <tr>
@@ -11,11 +10,12 @@
                 <th>Nombre</th>
                 <th>Gmail</th>
                 <th>Telefono</th>
+                <th>Estado</th>
                 @if (auth()->user()->rols_id == 1)
                     <th>Rol</th>
-                    <th>Acciones</th>    
+                    <th>Acciones</th>
                 @endif
-                <th>Estado</th>
+                
             </tr>
         </thead>
 
@@ -42,21 +42,25 @@
                         
                     @if (auth()->user()->rols_id == 1)
                         <td>{{$user->descripcionRol($user)}}</td>
-                        <td class="d-inline-flex">
+                        <td class="d-inline-flex text-align: center">
                             <div class="mr-2">
-                                <button type="button" class="btn btn-warning">
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#actualizar{{$user->id}}">
                                     Actualizar
                                 </button>
                             </div>
 
                             <div>
-                                <button type="button" class="btn btn-danger">
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminar{{$user->id}}">
                                     Eliminar
                                 </button>
                             </div>
                         </td>   
                     @endif
                 </tr>
+
+                @include('modales.modalActualizar')
+                @include('modales.modalEliminar')
+                
             @endforeach
         </tbody>
     </table>

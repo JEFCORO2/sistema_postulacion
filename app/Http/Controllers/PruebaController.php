@@ -14,6 +14,7 @@ class PruebaController extends Controller
         $user = auth()->user();
         $user->nota = $request->input('score');
         $user->tiempo = $request->input('time_spent');
+        //dd($user->tiempo);
         $user->save();
 
         return view('admin.users.editar-perfil');
