@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <div class="row justify-content-center mt-1">
                     <div class="">
-                        <form action="{{ route('editar_post') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('user.actualizar', $user->id) }}" method="POST">
                             @csrf                
                             <div class="mb-3">
                                 <label for="tel" class="form-label">Telefono</label>
@@ -24,15 +24,15 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="rol" class="form-label">Rol</label>
-
-                                <select name="rols_id" id="rols_id" class="form-control">
-                                    <option value="{{$user->rols_id}}">{{$user->rols_id}}</option>
-                                    <option value="1">Administrador</option>
-                                    <option value="2">Psicólogo</option>
-                                    <option value="3">Postulante</option>
-                                </select>
-
+                                <div class="form-group">
+                                    <label for="rols_id">Rol de Usuario</label>
+                                    <select class="form-control" id="rol" name="rols_id">
+                                        <option value="1" {{ $user->rols_id == 1 ? 'selected' : '' }}>Administrador</option>
+                                        <option value="2" {{ $user->rols_id == 2 ? 'selected' : '' }}>Postulante</option>
+                                        <option value="3" {{ $user->rols_id == 3 ? 'selected' : '' }}>Psicólogo</option>
+                                    </select>
+                                </div>
+                                
                                 @error('rols_id')
                                     <div class="invalid-feedback">{{ $message}}</div>
                                 @enderror

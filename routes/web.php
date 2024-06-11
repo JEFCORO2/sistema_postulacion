@@ -33,12 +33,13 @@ Route::get('/admin/perfil', [PerfilController::class, 'index'])->name('perfil.in
 //Editar perfil
 Route::get('/admin/perfil-editar', [PerfilController::class, 'editar_perfil'])->name('editar_perfil');
 
-//Post para for,ularios
+//Post para formularios
 Route::post('/admin/perfil', [PerfilController::class, 'editar_post'])->name('editar_post');
-
 
 //Listar Usuarios
 Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
+Route::post('/actualizar/{id}', [UserController::class, 'actualizar'])->name('user.actualizar');
+Route::post('/eliminar/{id}', [UserController::class, 'eliminar'])->name('user.eliminar');
 
 //Gestion de Roles
 Route::get('/roles', [RolController::class, 'index'])->name('roles/crear');

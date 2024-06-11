@@ -19,4 +19,28 @@ class UserController extends Controller
             'users' => $users
         ]);
     }
+
+    public function actualizar(Request $request, $id){
+
+        $user = User::where('id', $id)->firstOrFail();
+
+        $request->validate([
+            'tel' => 'required|min:9',
+            'rols_id' => 'required'
+        ]);
+
+        $user->tel = $request->tel;
+        $user->rols_id = $request->rols_id;
+
+        $user->save();
+
+        return redirect()->route('usuarios');
+    }
+
+    public function eliminar($id){
+        $user = User::where('id', $id)->firstOrFail();
+        $user->delete();
+
+        return redirect()->route('usuarios');
+    }
 }
