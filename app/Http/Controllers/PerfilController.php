@@ -53,7 +53,8 @@ class PerfilController extends Controller
 
         if($request->imagen){
             $nombre = $usuario->id.'.'.$request->file('imagen')->getClientOriginalExtension();
-            $img = $request->file('imagen')->storeAs('perfiles',$nombre);
+            // $img = $request->file('imagen')->storeAs('perfiles',$nombre);
+            $img = $request->file('imagen')->storeAs('public/img',$nombre);
             $usuario->imagen = $nombre;
         }
 
